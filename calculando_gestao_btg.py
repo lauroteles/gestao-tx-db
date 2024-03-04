@@ -51,8 +51,8 @@ class CalculandoTaxadeGestao:
 
         self.planilha_controle.rename(columns={'Taxa de Gestão':'Taxa_de_Gestão','Conta':'conta'},inplace=True)
     
-        tx_gestao = pd.merge(self.planilha_controle,self.pl, left_on='conta',right_on='CONTA',how='outer')
-        tx_gestao = tx_gestao[['conta','Taxa_de_Gestão','VALOR']]
+        tx_gestao = pd.merge(self.planilha_controle,self.pl, left_on='conta',right_on='Conta',how='outer')
+        tx_gestao = tx_gestao[['conta','Taxa_de_Gestão','Valor']].rename(columns={'Valor':'VALOR'})
         tx_gestao['Data'] = dia_e_hora 
         tx_gestao['Tx_Gestão_Diaria'] = ((tx_gestao['Taxa_de_Gestão']+1)**calculo_diario-1)*100
         tx_gestao['Valor_de_cobrança'] = tx_gestao['VALOR']*(tx_gestao['Taxa_de_Gestão'])/100
