@@ -200,9 +200,10 @@ if radio == 'Consulta':
 
 
     if data_inicio <= data_fim and st.sidebar.button('Consultar por período: '):
-        arquivo_consulta_filtro = consultar_banco_de_dados_por_periodo(data_inicio, data_fim)
+        arquivo_consulta_filtro2 = consultar_banco_de_dados_por_periodo(data_inicio, data_fim)
+        arquivo_consulta_filtro = arquivo_consulta_filtro2.groupby('conta')['Valor_de_cobrança'].sum().reset_index()
         st.dataframe(arquivo_consulta_filtro)
-        st.success(f"Valor total das taxas para o período e de:  R$ {arquivo_consulta_filtro['Valor_de_cobrança'].sum():,.2f}")
+        st.success(f"Valor total acumualdo para o período e de:  R$ {arquivo_consulta_filtro['Valor_de_cobrança'].sum():,.2f}")
 
     def consultar_banco_de_dados_completo():
         engine = create_engine(connection_string)
