@@ -53,7 +53,8 @@ class CalculandoTaxadeGestao:
     
         tx_gestao = pd.merge(self.planilha_controle,self.pl, left_on='conta',right_on='Conta',how='outer')
         tx_gestao = tx_gestao[['conta','Taxa_de_Gestão','Valor']].rename(columns={'Valor':'VALOR'})
-        tx_gestao['Data'] = dia_e_hora 
+        selecionar_data = st.date_input('Data')
+        tx_gestao['Data'] = selecionar_data
         tx_gestao['Tx_Gestão_Diaria'] = ((tx_gestao['Taxa_de_Gestão']+1)**calculo_diario-1)*100
         tx_gestao['Valor_de_cobrança'] = tx_gestao['VALOR']*(tx_gestao['Taxa_de_Gestão'])/100
         tx_gestao = tx_gestao.dropna(subset=['conta'])
@@ -85,7 +86,8 @@ class CalculandoTaxadeGestao:
         self.planilha_controle['Conta'] = self.planilha_controle['Conta'].str[:-1]
         tx_gestao = pd.merge(self.planilha_controle,self.guide_pl,on='Conta',how='outer').dropna().rename(columns={'Conta':'conta',
                                                                                                          'Taxa de Gestão':'Taxa_de_Gestão'}).reset_index(drop='index')
-        tx_gestao['Data'] = dia_e_hora
+        selecionar_data = st.date_input('Data')
+        tx_gestao['Data'] = selecionar_data
         tx_gestao['Tx_Gestão_Diaria'] = ((tx_gestao['Taxa_de_Gestão']+1)**calculo_diario-1)*100
         tx_gestao[f'Valor_de_cobrança'] = tx_gestao['VALOR']*(tx_gestao['Tx_Gestão_Diaria'])/100   
         return tx_gestao
@@ -176,7 +178,8 @@ class CalculandoTaxadeGestao:
 
         calculo_diario = 1/252
         dia_e_hora = datetime.datetime.now().strftime("%Y-%m-%d")
-        tx_gestao['Data'] = dia_e_hora
+        selecionar_data = st.date_input('Data')
+        tx_gestao['Data'] = selecionar_data
         tx_gestao['Tx_Gestão_Diaria'] = ((tx_gestao['Taxa_de_Gestão']+1)**calculo_diario-1)*100
         tx_gestao[f'Valor_de_cobrança'] = tx_gestao['VALOR']*(tx_gestao['Tx_Gestão_Diaria'])/100   
         tx_gestao = tx_gestao.iloc[:,[3,4,1,5,6,7]]
