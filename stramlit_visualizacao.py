@@ -20,23 +20,32 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, Float, Integer, String, DateTime
 from io import StringIO
 from dotenv import load_dotenv
+import mysql.connector
 import os
-
-
+from sqlalchemy.engine import URL
 
 
 # print('*'*50)
-# print(api_key)
-# dia_e_hora = datetime.datetime.now()
+
+
+connection_string = URL.create(
+    drivername="mysql+pymysql",
+    username="admin",
+    password="bluemetrix",
+    host="bmrtx-2024.c540o2gu0k2c.us-east-1.rds.amazonaws.com",
+    port=3306,
+    database="Bluemetrix"
+)
+
+
+dia_e_hora = datetime.datetime.now()
 
 st.set_page_config(layout='wide')
+
 st.header('Calculo e armazenamento dos dados da Taxa de Gestão')
 
-
-api_key = st.secrets.get('api_key')
-
 def registrar_dados_no_Mysql(dados):
-    engine = create_engine('mysql+pymysql://admin:Bluemetrix2024@bluemetrix-teste.cziuya4oaa6t.us-east-2.rds.amazonaws.com:3306/Bluemetrix')
+    engine = create_engine(connection_string)
     dados.to_sql('taxa_admin',con=engine, if_exists='append',index=False)
 
 
@@ -166,7 +175,7 @@ elif radio == 'Ágora':
 if radio == 'Consulta':
 
     def consultar_data_base(data=None,conta=None):
-        engine = create_engine('mysql+pymysql://admin:Bluemetrix2024@bluemetrix-teste.cziuya4oaa6t.us-east-2.rds.amazonaws.com:3306/Bluemetrix')
+        engine = create_engine(connection_string)
 
         consultar_sql = " SELECT * FROM taxa_admin"
 
@@ -179,7 +188,7 @@ if radio == 'Consulta':
         return resultados
 
     def consultar_banco_de_dados_por_periodo(data_inicio, data_fim):
-        engine = create_engine('mysql+pymysql://admin:Bluemetrix2024@bluemetrix-teste.cziuya4oaa6t.us-east-2.rds.amazonaws.com:3306/Bluemetrix')
+        engine = create_engine(connection_string)
         query = f"SELECT * FROM taxa_admin WHERE data BETWEEN '{data_inicio}' AND '{data_fim}'"
         arquivo_consulta = pd.read_sql(query, engine)
         return arquivo_consulta
@@ -196,7 +205,7 @@ if radio == 'Consulta':
         st.success(f"Valor total das taxas para o período e de:  R$ {arquivo_consulta_filtro['Valor_de_cobrança'].sum():,.2f}")
 
     def consultar_banco_de_dados_completo():
-        engine = create_engine('mysql+pymysql://admin:Bluemetrix2024@bluemetrix-teste.cziuya4oaa6t.us-east-2.rds.amazonaws.com:3306/Bluemetrix')
+        engine = create_engine(connection_string)
         arquivo_consulta = pd.read_sql(" SELECT * FROM taxa_admin",engine)
         return arquivo_consulta
 
